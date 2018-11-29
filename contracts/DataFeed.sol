@@ -61,7 +61,7 @@ contract DataFeed is usingOraclize, DestructibleModified {
   {
     // Testing Oraclize using Ethereum bridge (see readme for more details)
     /** ### NOTE:  COMMENT THIS OUT FOR DEPLOYMENT / PRODUCTION ## **/
-    OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+    // OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
 
     // Constants
     queryUrl = _queryUrl;
@@ -73,7 +73,7 @@ contract DataFeed is usingOraclize, DestructibleModified {
     gasLimit = 300000;              // Adjust this value depending on code length
     gasPrice = 50000000000;         // 50 GWei, Oraclize default
 
-    oraclize_setCustomGasPrice(gasPrice);    
+    oraclize_setCustomGasPrice(gasPrice);
     oraclize_setProof(proofType_NONE);
   }
 
@@ -98,14 +98,14 @@ contract DataFeed is usingOraclize, DestructibleModified {
     }
   }
 
-  // Assumes that the result is a raw JSON object with at least 2 fields: 
+  // Assumes that the result is a raw JSON object with at least 2 fields:
   // 1) portfolio value in ETH, with 2 decimal places
   // 2) current USD/ETH exchange rate, with 2 decimal places
   // The function parses the JSON and stores the value and usdEth.
   function __callback(bytes32 _myid, string _result) {
     require(validIds[_myid]);
     require(msg.sender == oraclize_cbAddress());
-    
+
     uint returnValue;
     JsmnSolLib.Token[] memory tokens;
     uint actualNum;

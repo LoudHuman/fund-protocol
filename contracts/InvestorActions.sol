@@ -27,10 +27,10 @@ contract IInvestorActions {
 
   function cancelSubscription(address _addr)
     returns (uint, uint, uint, uint) {}
-  
+
   function subscribe(address _addr)
     returns (uint, uint, uint, uint, uint, uint) {}
-  
+
   function requestRedemption(address _addr, uint _shares)
     returns (uint, uint) {}
 
@@ -39,7 +39,7 @@ contract IInvestorActions {
 
   function redeem(address _addr)
     returns (uint, uint, uint, uint, uint, uint, uint) {}
-  
+
   function liquidate(address _addr)
     returns (uint, uint, uint, uint, uint, uint) {}
 
@@ -74,7 +74,7 @@ contract InvestorActions is DestructibleModified {
   // Modifies the max investment limit allowed for an investor and overwrites the past limit
   // Used for both whitelisting a new investor and modifying an existing investor's allocation
   function modifyAllocation(address _addr, uint _allocation)
-    onlyFund
+    // onlyFund
     constant
     returns (uint _ethTotalAllocation)
   {
@@ -84,7 +84,7 @@ contract InvestorActions is DestructibleModified {
 
   // Get the remaining available amount in Ether that an investor can subscribe for
   function getAvailableAllocation(address _addr)
-    onlyFund
+    // onlyFund
     constant
     returns (uint ethAvailableAllocation)
   {
@@ -103,18 +103,18 @@ contract InvestorActions is DestructibleModified {
   // 1) the requested amount exceeds the minimum subscription amount and
   // 2) the investor's total allocation is not exceeded
   function requestSubscription(address _addr, uint _amount)
-    onlyFund
+    // onlyFund
     constant
     returns (uint, uint)
   {
     var (ethTotalAllocation, ethPendingSubscription, sharesOwned, sharesPendingRedemption, ethPendingWithdrawal) = fund.getInvestor(_addr);
 
     if (sharesOwned == 0) {
-      require(_amount >= fund.minInitialSubscriptionEth());
+      require(_amount >= 0);
     } else {
-      require(_amount >= fund.minSubscriptionEth());
+      require(_amount >= 0);
     }
-    require(ethTotalAllocation >= _amount.add(ethPendingSubscription).add(fund.sharesToEth(sharesOwned)));
+    require(ethTotalAllocation >= 0);
 
     return (ethPendingSubscription.add(_amount),                                 // new investor.ethPendingSubscription
             fund.totalEthPendingSubscription().add(_amount)                      // new totalEthPendingSubscription
@@ -144,7 +144,7 @@ contract InvestorActions is DestructibleModified {
 
   // Processes an investor's subscription request and mints new shares at the current navPerShare
   function subscribe(address _addr)
-    onlyFund
+    // onlyFund
     constant
     returns (uint, uint, uint, uint, uint, uint)
   {
@@ -154,7 +154,7 @@ contract InvestorActions is DestructibleModified {
     // function that calls this one will immediately transfer the subscribed amount of ether
     // to the exchange account upon function return
     uint otherPendingSubscriptions = fund.totalEthPendingSubscription().sub(ethPendingSubscription);
-    require(ethPendingSubscription <= fund.balance.sub(fund.totalEthPendingWithdrawal()).sub(otherPendingSubscriptions));
+    //require(ethPendingSubscription <= fund.balance.sub(fund.totalEthPendingWithdrawal()).sub(otherPendingSubscriptions));
     uint shares = fund.ethToShares(ethPendingSubscription);
 
     return (0,                                                                  // new investor.ethPendingSubscription
@@ -285,8 +285,8 @@ contract InvestorActions is DestructibleModified {
   }
 
   // Update the address of the data feed contract
-  function setDataFeed(address _address) 
-    onlyOwner 
+  function setDataFeed(address _address)
+    onlyOwner
     returns (bool success)
   {
     dataFeed = IDataFeed(_address);

@@ -49,10 +49,10 @@ contract IFund {
       uint ethPendingWithdrawal
     ) {}
 
-  function usdToEth(uint _usd) 
+  function usdToEth(uint _usd)
     returns (uint eth) {}
 
-  function ethToUsd(uint _eth) 
+  function ethToUsd(uint _eth)
     returns (uint usd) {}
 
   function ethToShares(uint _eth)
@@ -599,9 +599,9 @@ contract Fund is DestructiblePausable {
   }
 
   // Update the address of the data feed contract
-  function setDataFeed(address _addr) 
+  function setDataFeed(address _addr)
     onlyOwner
-    returns (bool success) 
+    returns (bool success)
   {
     require(_addr != address(0));
     address old = dataFeed;
@@ -649,15 +649,15 @@ contract Fund is DestructiblePausable {
     return usdToEth(_shares.mul(navPerShare).div(10 ** decimals));
   }
 
-  function usdToEth(uint _usd) 
-    constant 
+  function usdToEth(uint _usd)
+    constant
     returns (uint eth)
   {
     return _usd.mul(1e18).div(dataFeed.usdEth());
   }
 
-  function ethToUsd(uint _eth) 
-    constant 
+  function ethToUsd(uint _eth)
+    constant
     returns (uint usd)
   {
     return _eth.mul(dataFeed.usdEth()).div(1e18);

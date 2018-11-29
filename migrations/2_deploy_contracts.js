@@ -17,16 +17,16 @@ const USD_LTC_EXCHANGE_RATE         = 100;
 const DATA_FEED_GAS_RESERVE         = 1;
 
 // Fund settings
-const FUND_NAME                     = "CoinAlpha Falcon";
-const FUND_SYMBOL                   = "FALC";
-const FUND_DECIMALS                 = 4;
+const FUND_NAME                     = "loudHUMAN Magazine Fund";
+const FUND_SYMBOL                   = "HU";
+const FUND_DECIMALS                 = 3;
 const MANAGER_USD_ETH_BASIS         = 300;
-const MIN_INITIAL_SUBSCRIPTION_ETH  = 20;
-const MIN_SUBSCRIPTION_ETH          = 5;
-const MIN_REDEMPTION_SHARES         = 100000;
-const ADMIN_FEE                     = 1;
+const MIN_INITIAL_SUBSCRIPTION_ETH  = 0.0025;
+const MIN_SUBSCRIPTION_ETH          = 0.0025;
+const MIN_REDEMPTION_SHARES         = 1;
+const ADMIN_FEE                     = 100;
 const MGMT_FEE                      = 0;
-const PERFORM_FEE                   = 20;
+const PERFORM_FEE                   = 300;
 
 module.exports = function(deployer, network, accounts) {
 
@@ -34,8 +34,8 @@ module.exports = function(deployer, network, accounts) {
   const ADMINISTRATOR = accounts[0];
   const MANAGER = accounts[0];
   const EXCHANGE = accounts[1];
-  
-  // 
+
+  //
   const useOraclize = true;
   const dataFeedReserve = ethToWei(DATA_FEED_GAS_RESERVE);
 
@@ -51,7 +51,7 @@ module.exports = function(deployer, network, accounts) {
       { from: ADMINISTRATOR, value: dataFeedReserve }
     ).then(() =>
       deployer.deploy(
-        NavCalculator, 
+        NavCalculator,
         DataFeed.address,
         { from: ADMINISTRATOR }
       )).then(() =>
@@ -84,10 +84,10 @@ module.exports = function(deployer, network, accounts) {
     // Network-specific variables
     const NAV_SERVICE_URL = dataFeedInfo[network].navServiceUrl;
     const DATA_FEED_ADDRESS = dataFeedInfo[network].dataFeedAddress;
- 
+
     // assume that DataFeed has already been deployed and has an updated value() property
     deployer.deploy(
-      NavCalculator, 
+      NavCalculator,
       DATA_FEED_ADDRESS,
       { from: ADMINISTRATOR }
     ).then(() =>
